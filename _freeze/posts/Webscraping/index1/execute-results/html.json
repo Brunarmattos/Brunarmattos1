@@ -1,0 +1,14 @@
+{
+  "hash": "6c78c0061af5ba6df832af8dcb5f10cd",
+  "result": {
+    "markdown": "---\ntitle: \"Aplicando WebScraping no site Wikipédia\"\nauthor: \"Bruna Rodrigues de Mattos\"\ndate: \"2022-07-21\"\ncategories: [news, code, analysis]\nimage: \"image.jpg\"\n---\n\n\nO seguinte código visa aplicar conhecimentos de ferramentas de WebScraping para extrair uma tabela da página Lista de municípios do Espírito Santo por populção.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(reticulate)\n```\n:::\n\n::: {.cell}\n\n```{.python .cell-code}\nfrom bs4 import BeautifulSoup\nimport pandas as pd\n```\n:::\n\n\nBaixando a página da Web\n\n\n::: {.cell}\n\n```{.python .cell-code}\n2+4\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n6\n```\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

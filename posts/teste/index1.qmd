@@ -1,0 +1,88 @@
+---
+title: "Executando Webscraping no Wikipédia"
+author: "Bruna Rodrigues de Mattos"
+date: "2022-07-21"
+categories: [news, code, analysis]
+image: "wikipedia_pagina.png"
+---
+
+O seguinte código visa extrair uma tabela de municípios do estado do Espírito Santo disponibilizado no site Wikipédia, através de métodos de Webscraping.
+
+```{r}
+library(reticulate)
+```
+
+Num primeiro momento, iremos baixar a página desejada da web.
+
+```{python}
+from bs4 import BeautifulSoup
+import pandas as pd
+import requests
+url = requests.get("https://pt.wikipedia.org/wiki/Lista_de_munic%C3%ADpios_do_Esp%C3%ADrito_Santo_por_popula%C3%A7%C3%A3o")
+print(url.status_code)
+```
+
+```{python}
+print(url.content)
+```
+
+Agora, iremos exibir o conteúdo HTML da página, formatado corretamente e armazena-lo no objeto soup.
+
+```{python}
+soup = BeautifulSoup(url.content, 'html.parser')
+
+print(soup.prettify())
+```
+
+Extraindo a tabela:
+
+```{python}
+tabela = soup.find('table')
+
+print(tabela)
+```
+
+Extraindo os títulos das colunas:
+
+```{python}
+titulos = [i.text for i in tabela.find_all('th')]
+
+print(titulos)
+```
+
+Criando o dataframe que armazenará nossa tabela com as informações dos municípios.
+
+```{python}
+df = pd.DataFrame(columns = titulos)
+
+df
+```
+
+Agora iremos coletar as informações que preencherão nossa tabela:
+
+```{python}
+for j in tabela.find_all('tr')[1:]:
+    row_data = j.find_all('td')
+    row = [i.text for i in row_data]
+    length = len(df)
+    df.loc[length] = row
+```
+
+Teremos algo nesse formato:
+
+```{python}
+print(df)
+```
+
+No entanto, percebemos alguns detalhes indesejados na nossa tabela, como por exemplo, o final \\\n e \[2\] na linha 16.
+
+```{python}
+populacao = df['População\n']
+
+populacao1 = [i.split('\n')[0].replace('\xa0','.').split('[2]')[0] for i in populacao]
+
+df['População\n'] = populacao1
+
+df = df.rename(columns={'População\n': 'População'}) 
+print(df)
+```
