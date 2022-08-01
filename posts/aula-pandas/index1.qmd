@@ -1,0 +1,46 @@
+---
+title: "Exercício Pandas"
+author: "Bruna Rodrigues de Mattos"
+date: "2022-07-29"
+categories: [news, code, analysis]
+image: ""
+---
+
+```{r}
+library(reticulate)
+```
+
+O código abaixo realiza uma pequena análise do quatitativo de alunas com o nome 'Bruna' no registro de alunos da Universidade Federal do Espirito Santo (UFES).
+
+```{python}
+import pandas as pd 
+import numpy as np
+
+alunos = pd.read_csv('alunos.csv', sep=',')
+alunos.head()
+```
+
+Iremos colocar todos os registros em letra maiúscula para padroizar.
+
+```{python}
+alunos["NOME DO ALUNO"] = alunos["NOME DO ALUNO"].str.upper()
+
+alunos
+```
+
+Selecionando apenas os alunos com nome 'BRUNA'
+
+```{python}
+nome_bruna = alunos[alunos['NOME DO ALUNO'].str.contains(pat = '^BRUNA', regex = True)]
+
+nome_bruna
+```
+
+Iremos apresentar o quantitaivo de alunas com o nome 'BRUNA'
+
+```{python}
+lst = ['Bruna']
+
+df = pd.DataFrame({'Nome': lst, 'Quantidade':nome_bruna.shape[0]})
+df
+```
