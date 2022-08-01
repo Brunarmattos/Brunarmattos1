@@ -1,6 +1,6 @@
 ---
 title: "About"
-image: profile.jpg
+image: foto-site.jpeg
 about:
   template: jolla
   links:
@@ -13,7 +13,6 @@ about:
     - icon: github
       text: Github
       href: https://github.com
-
 ---
 
-About this blog
+Olá, meu nome é Bruna Rodrigues de Mattos, graduanda de estatística pela Universidade Federal do Espírito Santo. Este blog será dedicado a apresentar as atividades realizadas na disciplina de Tópicos Especiais em Estatística Computacional.
