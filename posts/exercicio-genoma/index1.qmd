@@ -1,0 +1,135 @@
+---
+title: "Exercício comparação de genomas"
+author: "Bruna Rodrigues de Mattos"
+date: "2022-06-30"
+categories: [news, code, analysis]
+image: "imagem-capa-genoma.png"
+---
+
+Pretende-se comparar duas sequências de DNA: **SARS-CoV-2** identificado na cidade de Wuhan (China) e o Virus da **Influenza A** identificado na California (US).
+
+O DNA é uma molécula presente em todos os seres vivos, que é responsável por armazenar as caracterı́sticas hereditárias. Ela é composta por sequências de nucleotı́deos, que podem ser de quatro tipos: Adenina (**A**), Timina (**T**), Citosina (**C**) ou Guanina (**G**).
+
+Neste estudo de caso, queremos avaliar se estruturas com funções parecidas de organismos diferentes têm diferenças. Para isso vamos avaliar a quantidade de pares de nucleotı́deos.
+
+Os dados utilizados para este estudo referem-se a sequências de DNA disponı́veis nos seguintes links: \[SARS-CoV-2 Wuhan-Hu-1\](https://www.ncbi.nlm.nih.gov/nuccore/NC_045512.2?report=fasta) e \[Virus da Influenza A (California/07/2009(H1N1))\](https://www.ncbi.nlm.nih.gov/nuccore/CY266194.1?report=fasta).
+
+Para comparar as duas estruturas requere-se um mapa de calor (Heatmap) que permita realizar a comparação dos pares de nucleotı́deos. Comente sobre os resultados encontrados.
+
+```{r}
+library(reticulate)
+```
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+### Influenza
+
+No primeiro passo, iremos ler as bases de dados, começando pela de influenza.
+
+```{python}
+influenza = open('sequence-influenza.txt').read() # Ler o arquivo
+
+influenza = influenza.replace("\n","") # retirar os "\n"
+pares_influenza = [
+  influenza[i] + influenza[i + 1] for i in range(len(influenza) - 1)
+]
+```
+
+Após isso, iremos ler listar as possíveis combinações de genes.
+
+```{python}
+from itertools import permutations
+
+genes = ['A', 'T', 'C', 'G']
+
+combinations_genes = list(permutations(genes, 2))
+
+
+todos_genes = [''.join(i) for i in combinations_genes]
+todos_genes.extend(['AA', 'TT', 'CC', 'GG'])
+
+todos_genes
+```
+
+Iremos contabilizar todos os pares de genomas na nossa base, tendo como critério dos os possíveis pares que podem existir e que foram apresentados no passo anterior.
+
+```{python}
+genes_dict = {i:pares_influenza.count(i) for i in todos_genes}
+genes_dict
+```
+
+Ordenando nossas combinações possíveis
+
+```{python}
+ordered_dict = sorted(genes_dict.items(), key=lambda x: x[0], reverse=False)
+
+ordered_dict = {i[0]:i[1] for i in ordered_dict}
+
+```
+
+```{python}
+matriz_influenza = np.array(list(ordered_dict.values())).reshape(4,4)
+
+```
+
+E, por fim, plotaremos o gráfico de calor.
+
+```{python}
+plt.imshow(matriz_influenza, cmap = 'Blues', origin="lower")
+plt.xlabel('Índice da linha'); plt.ylabel('Índice da coluna')
+plt.xticks((0,1,2,3),['A','C', 'G', 'T'])
+plt.yticks([0,1,2,3],['A', "C", "G", "T"])
+plt.title("Influenza A")
+plt.colorbar()
+plt.show()
+```
+
+### Covid
+
+Agora replicaremos o mesmo algoritmo para a base de covid.
+
+Iniciando com a leitura do arquivo
+
+```{python}
+covid = open('sequence-covid.txt').read() # Ler o arquivo
+
+covid = covid.replace("\n","") # retirar os "\n"
+pares_covid = [
+  covid[i] + covid[i + 1] for i in range(len(covid) - 1)
+]
+
+```
+
+```{python}
+genes_dict = {i:pares_covid.count(i) for i in todos_genes}
+
+genes_dict
+```
+
+```{python}
+ordered_dict = sorted(genes_dict.items(), key=lambda x: x[0], reverse=False)
+
+ordered_dict = {i[0]:i[1] for i in ordered_dict}
+
+```
+
+```{python}
+matriz_covid = np.array(list(ordered_dict.values())).reshape(4,4)
+
+```
+
+```{python}
+import matplotlib.pyplot as plt
+
+plt.imshow(matriz_covid, cmap = 'Blues', origin="lower")
+plt.xlabel('Índice da linha'); plt.ylabel('Índice da coluna')
+plt.xticks((0,1,2,3),['A','C', 'G', 'T'])
+plt.yticks([0,1,2,3],['A', "C", "G", "T"])
+plt.title("Covid")
+plt.colorbar()
+plt.show()
+
+```
